@@ -1,0 +1,34 @@
+---
+// Main page component for the personal website
+// Now using modular components for better organization and maintainability
+import Layout from '../components/Layout.astro';
+import NavPath from '../components/NavPath.astro';
+import Home from '../components/Home.astro';
+import AboutMe from '../components/AboutMe.astro';
+import Skills from '../components/Skills.astro';
+import Projects from '../components/Projects.astro';
+
+const title = "Elliot's Personal Website";
+const description = "Elliot's personal website showcasing programming skills, projects, and experience in Python, JavaScript, HTML, CSS, and Machine Learning. Based in Vancouver, BC, Canada.";
+const keywords = "Elliot, personal website, programming, Python, JavaScript, HTML, CSS, Machine Learning, Vancouver, BC, Canada, developer, software engineer, portfolio";
+---
+
+<Layout title={title} description={description} keywords={keywords}>
+  <!-- Navigation Path with Soccer Ball -->
+  <NavPath />
+
+  <!-- Main Content -->
+  <main class="relative z-10" role="main">
+    <!-- Home Section -->
+    <Home />
+
+    <!-- About Me Section -->
+    <AboutMe />
+
+    <!-- Skills Section -->
+    <Skills />
+
+    <!-- Projects Section -->
+    <Projects />
+  </main>
+</Layout> 

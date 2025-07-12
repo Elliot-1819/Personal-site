@@ -1,0 +1,95 @@
+---
+// NavPath component for the dotted-line soccer ball navigation
+// This component handles all the interactive navigation logic
+---
+
+<!-- Fixed Navigation with Soccer Ball and Original Dotted Line -->
+<nav class="fixed left-0 top-0 z-50 h-screen w-24 pointer-events-none overflow-visible" style="left: 40px;" role="navigation" aria-label="Page navigation">
+  <!-- Original DottedLine.svg as background -->
+  <div class="absolute inset-0" aria-hidden="true">
+    <img 
+      src="/DottedLine.svg" 
+      alt="" 
+      class="h-full w-full object-contain opacity-60" 
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+  
+  <!-- Hidden SVG with the same path for ball movement calculations -->
+  <svg 
+    class="absolute top-0" 
+    style="width:96px; height:930px; opacity:0;" 
+    viewBox="0 0 97 930" 
+    preserveAspectRatio="none" 
+    aria-hidden="true"
+  >
+    <!-- The exact path from DottedLine.svg that the soccer ball will follow -->
+    <path 
+      id="navigation-path" 
+      d="M10.0184 1.89356C10.8794 4.48978 13.4887 9.69525 16.3132 15.1356C19.4249 21.1289 22.1775 26.6554 24.3628 31.8805C26.4879 36.9617 27.8396 42.311 29.7966 47.7513C32.1388 54.2629 34.3628 59.2712 37.1873 65.7943C39.8991 72.0572 40.0249 78.3971 42.4058 84.0657C44.5674 89.212 46.1044 94.4962 47.8461 100.804C49.3372 106.204 50.0183 113.179 53.7104 128.169C55.6626 136.094 55.6804 143.185 56.7633 150.804C57.7661 157.86 57.4156 163.655 58.0679 173.146C60.8164 213.137 56.9851 219.297 55.6869 224.966C54.4575 230.334 52.2101 235.396 50.4684 240.621C48.4666 246.627 46.1305 254.522 43.9453 260.191C41.9642 265.33 37.8853 274.927 33.9453 282.369C31.4257 287.129 30.0314 292.8 28.2897 298.025C26.548 303.25 24.8129 308.456 24.154 313.681C23.4214 319.491 20.899 325.416 18.0745 330.641C15.154 336.043 13.0712 343.237 11.3295 348.906C9.71192 354.17 7.85268 360.197 6.111 367.164C4.49416 373.631 3.93879 378.906 3.27995 384.131C2.50647 390.265 1.32953 398.031 1.10122 441.6C0.999163 461.075 3.05164 479.362 4.57806 484.587C6.29446 490.463 6.96553 498.488 8.70722 505.239C10.2724 511.307 16.0719 521.502 21.7405 529.812C25.9161 535.934 33.4756 539.819 39.7835 543.302C45.4433 546.427 50.4358 549.395 55.6609 551.136C63.1721 553.64 73.9192 551.586 80.227 548.762C85.6572 546.33 90.0183 542.037 93.2864 536.812C96.2463 532.079 96.124 524.659 94.6106 518.547C93.1823 512.778 89.1833 508.116 85.7 502.891C82.2668 497.741 76.5806 495.487 70.2727 493.53C64.4097 491.711 59.6204 488.964 42.4841 488.736C34.5758 488.631 29.6139 494.157 24.3889 497.64C18.9569 501.261 14.8194 506.759 12.4189 511.984C9.93795 517.384 7.85268 522.415 6.32627 527.64C4.84972 532.694 3.93879 538.07 2.41237 549.76C-1.87503 582.593 4.35627 589.812 6.09796 595.481C7.75988 600.89 10.8794 605.911 12.8364 611.136C15.0804 617.128 21.7339 620.706 26.959 623.974C31.8317 627.022 37.3895 630.699 42.6146 634.626C47.6346 638.399 53.0451 641.58 59.1377 645.278C64.5746 648.579 66.535 658.07 68.7202 664.626C71.0898 671.735 73.4756 693.635 75.4651 705.285C76.6869 712.439 77.4156 719.414 78.0744 726.805C78.8134 735.095 80.0248 745.507 80.2531 775.637C80.3318 786.02 77.4417 793.752 75.9087 802.03C73.1107 817.139 69.1703 824.646 66.1305 831.397C63.4115 837.436 61.3425 843.354 58.518 849.877C55.6835 856.423 55.2629 868.09 51.3491 879.212C44.7046 898.093 41.3295 908.585 36.7829 919.225C35.6804 921.645 35.2499 922.936 34.8129 924.248C34.3758 925.559 33.9453 926.85 33.5017 928.181" 
+      stroke="transparent" 
+      stroke-width="2" 
+      fill="none"
+    />
+    
+    
+  </svg>
+  
+  <!-- Soccer Ball that moves along the original dotted line path -->
+  <button 
+    id="soccer-ball" 
+    class="absolute pointer-events-auto cursor-pointer" 
+    style="transform: translate(-50%, -50%); transition: none;"
+    aria-label="Navigate to next section"
+    type="button"
+  >
+    <img 
+      src="/SoccerBall.svg" 
+      alt="Soccer ball navigation indicator" 
+      class="animate-float-smooth"
+      style="width:40px; height:40px; min-width:40px; min-height:40px; max-width:40px; max-height:40px; display:block; "
+      loading="lazy"
+      decoding="async"
+    />
+  </button>
+
+  <!-- Navigation Labels -->
+  <div class="absolute left-16 top-0 h-full flex flex-col justify-between py-20 text-white" role="group" aria-label="Page sections">
+    <button class="nav-btn text-sm opacity-80 hover:opacity-100 transition-opacity" data-section="0" aria-label="Go to Home section">Home</button>
+    <button class="nav-btn text-sm opacity-80 hover:opacity-100 transition-opacity" data-section="1" aria-label="Go to About me section">About me</button>
+    <button class="nav-btn text-sm opacity-80 hover:opacity-100 transition-opacity" data-section="2" aria-label="Go to Skills section">Skills</button>
+    <button class="nav-btn text-sm opacity-80 hover:opacity-100 transition-opacity" data-section="3" aria-label="Go to Projects section">Projects</button>
+  </div>
+</nav>
+
+<!-- Optimized Client-side JavaScript for SVG Path Following Soccer Ball Navigation -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const soccerBall = document.getElementById('soccer-ball');
+    const navigationPath = document.getElementById('navigation-path');
+    const pathLength = navigationPath.getTotalLength();
+
+    // This function moves the ball to the right spot based on scroll
+    function updateBallPosition() {
+      // How far down the page are we? (0 = top, 1 = bottom)
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = Math.min(scrollTop / scrollHeight, 1);
+
+      // Find the point on the path
+      const distance = progress * pathLength;
+      const point = navigationPath.getPointAtLength(distance);
+
+      // Move the ball
+      soccerBall.style.left = point.x + 'px';
+      soccerBall.style.top = point.y + 'px';
+    }
+
+    // Update on scroll
+    window.addEventListener('scroll', updateBallPosition);
+
+    // Update on page load
+    updateBallPosition();
+  });
+</script> 

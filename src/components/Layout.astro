@@ -1,0 +1,256 @@
+---
+// Layout component for the personal website
+// This contains the head section and global wrappers
+import '../styles/global.css';
+import { Picture } from 'astro:assets';
+import bgImage from '../assets/assets_task_01jzzp8yv4f4ta2qre3f31g1z1_1752336673_img_0.webp';
+
+export interface Props {
+  title: string;
+  description?: string;
+  keywords?: string;
+  image?: string;
+}
+
+const { 
+  title, 
+  description = "Elliot's personal website showcasing programming skills, projects, and experience in Python, JavaScript, HTML, CSS, and Machine Learning. Based in Vancouver, BC, Canada.",
+  keywords = "Elliot, personal website, programming, Python, JavaScript, HTML, CSS, Machine Learning, Vancouver, BC, Canada, developer, software engineer",
+  image = bgImage.src
+} = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/SoccerBall.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- Primary Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    <meta name="author" content="Elliot" />
+    <meta name="robots" content="index, follow" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.url)} />
+    <meta property="og:site_name" content="Elliot's Personal Website" />
+    <meta property="og:locale" content="en_US" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL(image, Astro.url)} />
+    
+    <!-- Additional SEO Meta Tags -->
+    <meta name="theme-color" content="#000000" />
+    <meta name="msapplication-TileColor" content="#000000" />
+    <link rel="canonical" href={Astro.url} />
+    
+    <!-- Structured Data for Rich Snippets -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Elliot",
+        "jobTitle": "Software Developer",
+        "description": "Programmer and developer based in Vancouver, BC, Canada",
+        "url": Astro.url,
+        "sameAs": [],
+        "knowsAbout": ["Python", "JavaScript", "HTML", "CSS", "Machine Learning"],
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Vancouver",
+          "addressRegion": "BC",
+          "addressCountry": "CA"
+        }
+      }
+    </script>
+  </head>
+  
+  <body class="overflow-x-hidden min-h-screen bg-fixed bg-center bg-cover">
+    <!-- Responsive background image using Astro Picture component -->
+    <div class="fixed inset-0 z-0" aria-hidden="true">
+      <Picture
+        src={bgImage}
+        alt=""
+        widths={[400, 800, 1200, 1600]}
+        sizes="100vw"
+        formats={['webp', 'avif', 'jpeg']}
+        class="w-full h-full object-cover"
+        loading="eager"
+        decoding="async"
+      />
+    </div>
+    
+    <!-- Overlay for better text readability -->
+    <div class="fixed inset-0 z-0 bg-black bg-opacity-30 pointer-events-none" aria-hidden="true"></div>
+
+    <!-- Main content slot -->
+    <slot />
+
+    <style>
+      /* CSS Custom Properties for theming */
+      :root {
+        /* Color Palette */
+        --color-primary: #ffffff;
+        --color-secondary: #fbbf24;
+        --color-accent: #f59e0b;
+        --color-background: #000000;
+        --color-overlay: rgba(0, 0, 0, 0.3);
+        
+        /* Text Colors */
+        --color-text-primary: #ffffff;
+        --color-text-secondary: rgba(255, 255, 255, 0.8);
+        --color-text-muted: rgba(255, 255, 255, 0.6);
+        
+        /* Background Colors */
+        --color-glass-bg: rgba(255, 255, 255, 0.1);
+        --color-glass-border: rgba(255, 255, 255, 0.2);
+        
+        /* Animation Durations */
+        --duration-fast: 0.1s;
+        --duration-normal: 0.3s;
+        --duration-slow: 0.8s;
+        
+        /* Spacing */
+        --spacing-xs: 0.25rem;
+        --spacing-sm: 0.5rem;
+        --spacing-md: 1rem;
+        --spacing-lg: 1.5rem;
+        --spacing-xl: 2rem;
+        --spacing-2xl: 3rem;
+        
+        /* Border Radius */
+        --radius-sm: 0.25rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 1rem;
+        --radius-xl: 1.5rem;
+        --radius-2xl: 2rem;
+      }
+
+      /* Global styles for the layout */
+      html {
+        scroll-behavior: smooth;
+      }
+      
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        color: var(--color-text-primary);
+      }
+
+      /* Smooth transitions for all animated elements */
+      .animate-slide-up {
+        animation: slideUp var(--duration-slow) ease-out forwards;
+      }
+
+      /* Floating animation for the soccer ball */
+      @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-10px) rotate(180deg); }
+      }
+
+      .animate-float {
+        animation: float 3s ease-in-out infinite;
+      }
+
+      /* Smoother floating animation for wiggly path */
+      @keyframes float-smooth {
+        0%, 100% { transform: translateY(0px) scale(1); }
+        25% { transform: translateY(-3px) scale(1.05); }
+        50% { transform: translateY(-6px) scale(1); }
+        75% { transform: translateY(-3px) scale(0.95); }
+      }
+
+      .animate-float-smooth {
+        animation: float-smooth 2.5s ease-in-out infinite;
+      }
+
+      /* Wiggly path specific enhancements */
+      #soccer-ball {
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        will-change: transform;
+      }
+
+      #soccer-ball img {
+        transition: transform var(--duration-fast) ease-out;
+      }
+
+      /* Custom scrollbar for webkit browsers */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--color-glass-bg);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--color-text-muted);
+        border-radius: var(--radius-sm);
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--color-text-secondary);
+      }
+
+      /* Ensure SVG path is crisp */
+      svg {
+        shape-rendering: crispEdges;
+      }
+
+      /* Navigation button hover effects */
+      .nav-btn:hover {
+        transform: translateX(2px);
+        text-shadow: 0 0 10px var(--color-text-primary);
+      }
+
+      /* Fade in animation for content */
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .animate-fade-in {
+        animation: fadeIn 1s ease-out forwards;
+      }
+
+      /* Slide up animation for sections */
+      @keyframes slideUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      /* Glass morphism utility classes using CSS custom properties */
+      .glass-box {
+        background: var(--color-glass-bg);
+        backdrop-filter: blur(8px);
+        border: 1px solid var(--color-glass-border);
+        border-radius: var(--radius-xl);
+      }
+
+      /* Text utility classes */
+      .text-primary { color: var(--color-text-primary); }
+      .text-secondary { color: var(--color-text-secondary); }
+      .text-muted { color: var(--color-text-muted); }
+      .text-accent { color: var(--color-accent); }
+
+      /* Responsive design utilities */
+      @media (max-width: 768px) {
+        :root {
+          --spacing-xl: 1.5rem;
+          --spacing-2xl: 2rem;
+        }
+      }
+    </style>
+  </body>
+</html> 
