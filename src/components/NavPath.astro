@@ -4,7 +4,7 @@
 ---
 
 <!-- Fixed Navigation with Soccer Ball and Original Dotted Line -->
-<nav class="fixed left-0 top-0 z-50 h-screen w-24 pointer-events-none overflow-visible" style="left: 40px;" role="navigation" aria-label="Page navigation">
+<nav class="fixed left-0 top-0 z-50 h-screen w-24 overflow-visible" style="left: 40px;" role="navigation" aria-label="Page navigation">
   <!-- Original DottedLine.svg as background -->
   <div class="absolute inset-0" aria-hidden="true">
     <img 
@@ -55,12 +55,6 @@
   </button>
 
   <!-- Navigation Labels -->
-  <div class="absolute left-16 top-0 h-full flex flex-col justify-between py-20 text-white" role="group" aria-label="Page sections">
-    <button class="nav-btn text-sm opacity-80 hover:opacity-100 transition-opacity" data-section="0" aria-label="Go to Home section">Home</button>
-    <button class="nav-btn text-sm opacity-80 hover:opacity-100 transition-opacity" data-section="1" aria-label="Go to About me section">About me</button>
-    <button class="nav-btn text-sm opacity-80 hover:opacity-100 transition-opacity" data-section="2" aria-label="Go to Skills section">Skills</button>
-    <button class="nav-btn text-sm opacity-80 hover:opacity-100 transition-opacity" data-section="3" aria-label="Go to Projects section">Projects</button>
-  </div>
 </nav>
 
 <!-- Optimized Client-side JavaScript for SVG Path Following Soccer Ball Navigation -->
@@ -70,15 +64,21 @@
     const navigationPath = document.getElementById('navigation-path');
     const pathLength = navigationPath.getTotalLength();
 
+    // Offset so the ball and buttons start 10% along the path
+    const offset = 0.05; // 5% offset
+    const maxProgress = 0.9; // Ball and Projects stop at 90% of the path
+
     // This function moves the ball to the right spot based on scroll
     function updateBallPosition() {
       // How far down the page are we? (0 = top, 1 = bottom)
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progress = Math.min(scrollTop / scrollHeight, 1);
+      // Add the offset and clamp to maxProgress
+      const adjustedProgress = Math.min(progress + offset, maxProgress);
 
       // Find the point on the path
-      const distance = progress * pathLength;
+      const distance = adjustedProgress * pathLength;
       const point = navigationPath.getPointAtLength(distance);
 
       // Move the ball
@@ -91,5 +91,153 @@
 
     // Update on page load
     updateBallPosition();
+
+    // --- Transparent Path Buttons for Section Navigation ---
+    // These progress values match the ball's progress for each section, with the same offset
+    // The last value (Projects) is set to 0.85 to keep it farther from the end
+    const buttonProgress = [0 + offset, 1/3 + offset, 2/3 + offset, 0.9];
+    const sections = document.querySelectorAll('section[id^="section-"]');
+
+    // Store button elements for active styling
+    const buttonElements = [];
+    buttonProgress.forEach((progress, i) => {
+      // Clamp to 1 to avoid going past the end
+      const clampedProgress = Math.min(progress, 1);
+      // Calculate the distance along the path for this button
+      const distance = clampedProgress * pathLength;
+      // Get the (x, y) coordinates on the path
+      const point = navigationPath.getPointAtLength(distance);
+
+      // Create the button element
+      const btn = document.createElement('button');
+      btn.style.position = 'absolute';
+      btn.style.left = point.x + 'px';
+      btn.style.top = point.y + 'px';
+      btn.style.transform = 'translate(-50%, -50%)';
+      btn.style.width = '25px';
+      btn.style.height = '25px';
+      btn.style.borderRadius = '50%';
+      btn.style.opacity = '0.08'; // Almost invisible
+      btn.style.background = '#fff';
+      btn.style.border = 'none';
+      btn.style.cursor = 'pointer';
+      btn.setAttribute('aria-label', `Go to section ${i + 1}`);
+
+      // On click, scroll to the corresponding section
+      btn.addEventListener('click', () => {
+        if (sections[i]) {
+          sections[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+
+      // Add the button to the nav (so it's positioned correctly)
+      document.querySelector('nav').appendChild(btn);
+      buttonElements.push(btn);
+    });
+
+    // Function to update button styles based on active section
+    function updateButtonStyles(activeIndex) {
+      buttonElements.forEach((btn, i) => {
+        if (i === activeIndex) {
+          btn.style.opacity = '0.05'; // More visible when active
+          btn.style.background = '#fff';
+          btn.style.boxShadow = 'none'; // No shadow when active
+          btn.style.transform = 'translate(-50%, -50%) scale(1.2)';
+          btn.style.transition = 'all 0.25s cubic-bezier(0.4,0,0.2,1)';
+        } else {
+          btn.style.opacity = '0.08'; // Less visible when inactive
+          btn.style.background = '#fff';
+          btn.style.boxShadow = 'none';
+          btn.style.transform = 'translate(-50%, -50%) scale(1)';
+          btn.style.transition = 'all 0.25s cubic-bezier(0.4,0,0.2,1)';
+        }
+      });
+    }
+
+    // --- Dynamically Place Headings at Button Positions ---
+    const headingLabels = ["Home", "About me", "Skills", "Projects"];
+    const headingElements = [];
+    buttonProgress.forEach((progress, i) => {
+      const clampedProgress = Math.min(progress, 1);
+      const distance = clampedProgress * pathLength;
+      const point = navigationPath.getPointAtLength(distance);
+
+      // Create the heading element
+      const heading = document.createElement('div');
+      heading.textContent = headingLabels[i];
+      heading.style.position = 'absolute';
+      heading.style.left = (point.x + 20) + 'px'; // 20px to the right of the path/ball (closer)
+      heading.style.top = point.y + 'px';
+      heading.style.transform = 'translateY(-50%)';
+      heading.style.color = 'white';
+      heading.style.fontSize = '1rem';
+      heading.style.opacity = '0.3';
+      heading.style.fontWeight = 'normal';
+      heading.style.pointerEvents = 'auto'; // Make headings clickable
+      heading.style.cursor = 'pointer';
+      heading.style.transition = 'all 0.25s cubic-bezier(0.4,0,0.2,1)';
+      heading.setAttribute('aria-label', `Go to section ${i + 1}`);
+      heading.dataset.baseX = point.x; // Store the original x position
+
+      // On click, scroll to the corresponding section
+      heading.addEventListener('click', () => {
+        if (sections[i]) {
+          sections[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+
+      document.querySelector('nav').appendChild(heading);
+      headingElements.push(heading);
+    });
+
+    // Function to update heading styles based on active section
+    function updateHeadingStyles(activeIndex) {
+      headingElements.forEach((heading, i) => {
+        const baseX = parseFloat(heading.dataset.baseX);
+        if (i === activeIndex) {
+          heading.style.left = (baseX + 30) + 'px'; // More space when active
+          heading.style.fontSize = '1.7rem';
+          heading.style.opacity = '1';
+          heading.style.fontWeight = 'bold';
+          heading.style.transition = 'all 0.25s cubic-bezier(0.4,0,0.2,1)';
+        } else {
+          heading.style.left = (baseX + 20) + 'px'; // Less space when inactive
+          heading.style.fontSize = '1rem';
+          heading.style.opacity = '0.3';
+          heading.style.fontWeight = 'normal';
+          heading.style.transition = 'all 0.25s cubic-bezier(0.4,0,0.2,1)';
+        }
+      });
+    }
+
+    // Function to get the active section index based on scroll position
+    function getActiveSectionIndex() {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = Math.min(scrollTop / scrollHeight, 1);
+      // Find the closest buttonProgress value
+      let minDiff = Infinity;
+      let activeIndex = 0;
+      buttonProgress.forEach((bp, i) => {
+        const diff = Math.abs(Math.min(progress + offset, maxProgress) - Math.min(bp, maxProgress));
+        if (diff < minDiff) {
+          minDiff = diff;
+          activeIndex = i;
+        }
+      });
+      return activeIndex;
+    }
+
+    // Update headings and buttons on scroll and on page load
+    function handleScrollAndHeadings() {
+      updateBallPosition();
+      const activeIndex = getActiveSectionIndex();
+      updateHeadingStyles(activeIndex);
+      updateButtonStyles(activeIndex);
+    }
+
+    window.addEventListener('scroll', handleScrollAndHeadings);
+    // Initial update
+    handleScrollAndHeadings();
   });
 </script> 
